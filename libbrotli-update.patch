@@ -1,0 +1,40 @@
+--- libbrotli/Makefile.am.orig	2015-10-21 23:26:03.000000000 +0200
++++ libbrotli/Makefile.am	2015-12-27 14:54:54.463549931 +0100
+@@ -5,16 +5,14 @@
+ lib_LTLIBRARIES = libbrotlidec.la libbrotlienc.la
+ 
+ DECODE = brotli/dec/bit_reader.c brotli/dec/decode.c		\
+-  brotli/dec/huffman.c brotli/dec/state.c brotli/dec/streams.c	\
+-  brotli/dec/dictionary.c
++  brotli/dec/huffman.c brotli/dec/state.c brotli/dec/streams.c
+ 
+ ENCODE = brotli/enc/backward_references.cc brotli/enc/histogram.cc	\
+  brotli/enc/block_splitter.cc brotli/enc/literal_cost.cc		\
+  brotli/enc/brotli_bit_stream.cc brotli/enc/metablock.cc		\
+  brotli/enc/encode.cc brotli/enc/static_dict.cc				\
+  brotli/enc/encode_parallel.cc brotli/enc/streams.cc			\
+- brotli/enc/entropy_encode.cc brotli/enc/dictionary.cc			\
+- brotli/enc/utf8_util.cc
++ brotli/enc/entropy_encode.cc
+ 
+ DECODEHEADERS = brotli/dec/decode.h brotli/dec/state.h			\
+  brotli/dec/streams.h brotli/dec/types.h brotli/dec/bit_reader.h	\
+@@ -31,7 +29,7 @@
+  brotli/enc/literal_cost.h brotli/enc/cluster.h brotli/enc/bit_cost.h   \
+  brotli/enc/entropy_encode.h brotli/enc/brotli_bit_stream.h             \
+  brotli/enc/write_bits.h brotli/enc/static_dict_lut.h                   \
+- brotli/enc/encode_parallel.h brotli/enc/types.h
++ brotli/enc/encode_parallel.h
+ 
+ EXTRA_DIST = AUTHORS README
+ 
+--- libbrotli/configure.ac.orig	2015-10-21 23:26:03.000000000 +0200
++++ libbrotli/configure.ac	2015-12-27 14:49:22.816897181 +0100
+@@ -1,6 +1,6 @@
+ AC_PREREQ(2.57)
+ 
+-AC_INIT([libbrotli], [0.1.0], [-])
++AC_INIT([libbrotli], [0.2.0], [-])
+ AC_CONFIG_SRCDIR([brotli/dec/decode.h])
+ AC_CONFIG_HEADERS([config.h])
+ AC_CONFIG_MACRO_DIR([m4])
