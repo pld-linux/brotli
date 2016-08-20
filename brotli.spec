@@ -7,16 +7,16 @@
 Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
-Version:	0.2.0
+Version:	0.5.2
 Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
-Source0:	https://github.com/google/brotli/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	6c84662ca13693967cb0a950d15873e7
+Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.tar.gz
+# Source0-md5:	e7a6c1fe7795475f4273ee4c36a3ad5c
 # metapackage to build shared libraries from brotli sources
-Source1:	https://github.com/bagder/libbrotli/archive/851122b665cde2374387c595ae3dc3369bf8ea05/libbrotli-20151022.tar.gz
-# Source1-md5:	6f6186f75a2b9385d20f9c9052965be2
+Source1:	https://github.com/bagder/libbrotli/archive/ccb89e138b0948d7c353bc508b0d8fc584e01ff2/libbrotli-20160820.tar.gz
+# Source1-md5:	27b5dba9342cf6461c5847667f7340e2
 Patch0:		libbrotli-update.patch
 URL:		https://github.com/google/brotli/
 BuildRequires:	autoconf >= 2.57
@@ -140,7 +140,7 @@ CXX="%{__cxx}" \
 CFLAGS="%{rpmcflags}" \
 CXXFLAGS="%{rpmcxxflags}" \
 CPPFLAGS="%{rpmcppflags}" \
-%{__make} -C tools
+%{__make}
 
 %if %{with python2}
 %py_build
@@ -155,7 +155,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} -C libbrotli/build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -D tools/bro $RPM_BUILD_ROOT%{_bindir}/bro
+install -D bin/bro $RPM_BUILD_ROOT%{_bindir}/bro
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libbrotli*.la
@@ -175,7 +175,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README.md docs/draft-alakuijala-brotli-04.txt
+%doc README.md docs/brotli-comparison-study-2015-09-22.pdf
 %attr(755,root,root) %{_bindir}/bro
 
 %files -n libbrotli
@@ -204,12 +204,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n python-brotli
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/brotli.so
-%{py_sitedir}/Brotli-0.1.0-py*.egg-info
+%{py_sitedir}/Brotli-0.5.2-py*.egg-info
 %endif
 
 %if %{with python3}
 %files -n python3-brotli
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py3_sitedir}/brotli.cpython-*.so
-%{py3_sitedir}/Brotli-0.1.0-py*.egg-info
+%{py3_sitedir}/Brotli-0.5.2-py*.egg-info
 %endif
