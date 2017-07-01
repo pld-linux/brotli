@@ -7,22 +7,16 @@
 Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
-Version:	0.5.2
-Release:	1.1
+Version:	0.6.0
+Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
 Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.tar.gz
-# Source0-md5:	e7a6c1fe7795475f4273ee4c36a3ad5c
-# metapackage to build shared libraries from brotli sources
-Source1:	https://github.com/bagder/libbrotli/archive/ccb89e138b0948d7c353bc508b0d8fc584e01ff2/libbrotli-20160820.tar.gz
-# Source1-md5:	27b5dba9342cf6461c5847667f7340e2
-Patch0:		libbrotli-update.patch
+# Source0-md5:	1dcdcda924ab0c232ce54fa9f2b02624
 URL:		https://github.com/google/brotli/
-BuildRequires:	autoconf >= 2.57
-BuildRequires:	automake
+BuildRequires:	cmake >= 2.8.6
 BuildRequires:	libstdc++-devel >= 6:4.7
-BuildRequires:	libtool >= 2:2
 %{?with_python2:BuildRequires:	python-devel >= 2}
 %{?with_python3:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	rpm-pythonprov
@@ -70,24 +64,13 @@ Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek Brotli
 Group:		Development/Libraries
 Requires:	libbrotli = %{version}-%{release}
 Requires:	libstdc++-devel >= 6:4.7
+Obsoletes:	libbrotli-static
 
 %description -n libbrotli-devel
 Header files for Brotli libraries.
 
 %description -n libbrotli-devel -l pl.UTF-8
 Pliki nagłówkowe bibliotek Brotli.
-
-%package -n libbrotli-static
-Summary:	Static Brotli libraries
-Summary(pl.UTF-8):	Statyczne biblioteki Brotli
-Group:		Development/Libraries
-Requires:	libbrotli-devel = %{version}-%{release}
-
-%description -n libbrotli-static
-Static Brotli libraries.
-
-%description -n libbrotli-static -l pl.UTF-8
-Statyczne biblioteki Brotli.
 
 %package -n python-brotli
 Summary:	Python 2 module for Brotli compression decoding/encoding
@@ -112,35 +95,16 @@ Python 3 module for Brotli compression decoding/encoding.
 Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 
 %prep
-%setup -q -a1
-
-ln -snf libbrotli-* libbrotli
-rmdir libbrotli/brotli
-ln -snf .. libbrotli/brotli
-%patch0 -p0
+%setup -q
 
 %build
-cd libbrotli
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-# use subdir so that tools build gets clean tree
 install -d build
 cd build
-../%configure \
-	--disable-silent-rules \
-	%{!?with_static_libs:--disable-static}
-%{__make}
-cd ../..
+%cmake ..
 
-CC="%{__cc}" \
-CXX="%{__cxx}" \
-CFLAGS="%{rpmcflags}" \
-CXXFLAGS="%{rpmcxxflags}" \
-CPPFLAGS="%{rpmcppflags}" \
 %{__make}
+
+cd ..
 
 %if %{with python2}
 %py_build
@@ -152,17 +116,15 @@ CPPFLAGS="%{rpmcppflags}" \
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} -C libbrotli/build install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-install -D bin/bro $RPM_BUILD_ROOT%{_bindir}/bro
-
-# obsoleted by pkg-config
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libbrotli*.la
 
 %if %{with python2}
 %py_install
+
+%py_postclean
 %endif
+
 %if %{with python3}
 %py3_install
 %endif
@@ -180,36 +142,33 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libbrotli
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbrotlidec.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbrotlidec.so.1
-%attr(755,root,root) %{_libdir}/libbrotlienc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbrotlienc.so.1
+%attr(755,root,root) %{_libdir}/libbrotlicommon.so.0.6.0
+%attr(755,root,root) %{_libdir}/libbrotlidec.so.0.6.0
+%attr(755,root,root) %{_libdir}/libbrotlienc.so.0.6.0
 
 %files -n libbrotli-devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libbrotlicommon.so
 %attr(755,root,root) %{_libdir}/libbrotlidec.so
 %attr(755,root,root) %{_libdir}/libbrotlienc.so
 %{_includedir}/brotli
+%{_pkgconfigdir}/libbrotlicommon.pc
 %{_pkgconfigdir}/libbrotlidec.pc
 %{_pkgconfigdir}/libbrotlienc.pc
-
-%if %{with static_libs}
-%files -n libbrotli-static
-%defattr(644,root,root,755)
-%{_libdir}/libbrotlidec.a
-%{_libdir}/libbrotlienc.a
-%endif
 
 %if %{with python2}
 %files -n python-brotli
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/brotli.so
-%{py_sitedir}/Brotli-0.5.2-py*.egg-info
+%attr(755,root,root) %{py_sitedir}/_brotli.so
+%{py_sitedir}/brotli.py[co]
+%{py_sitedir}/Brotli-%{version}-py*.egg-info
 %endif
 
 %if %{with python3}
 %files -n python3-brotli
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py3_sitedir}/brotli.cpython-*.so
-%{py3_sitedir}/Brotli-0.5.2-py*.egg-info
+%attr(755,root,root) %{py3_sitedir}/_brotli.cpython-*.so
+%{py3_sitedir}/brotli.py
+%{py3_sitedir}/__pycache__/brotli.cpython-*.py[co]
+%{py3_sitedir}/Brotli-%{version}-py*.egg-info
 %endif
