@@ -7,13 +7,13 @@
 Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
-Version:	0.6.0
+Version:	1.0.2
 Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
 Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.tar.gz
-# Source0-md5:	1dcdcda924ab0c232ce54fa9f2b02624
+# Source0-md5:	ded01ebc24dda74ebac1719ac1e51728
 URL:		https://github.com/google/brotli/
 BuildRequires:	cmake >= 2.8.6
 BuildRequires:	libstdc++-devel >= 6:4.7
@@ -138,13 +138,16 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.md docs/brotli-comparison-study-2015-09-22.pdf
-%attr(755,root,root) %{_bindir}/bro
+%attr(755,root,root) %{_bindir}/brotli
 
 %files -n libbrotli
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbrotlicommon.so.0.6.0
-%attr(755,root,root) %{_libdir}/libbrotlidec.so.0.6.0
-%attr(755,root,root) %{_libdir}/libbrotlienc.so.0.6.0
+%attr(755,root,root) %{_libdir}/libbrotlicommon.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libbrotlicommon.so.1
+%attr(755,root,root) %{_libdir}/libbrotlidec.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libbrotlidec.so.1
+%attr(755,root,root) %{_libdir}/libbrotlienc.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libbrotlienc.so.1
 
 %files -n libbrotli-devel
 %defattr(644,root,root,755)
