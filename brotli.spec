@@ -64,13 +64,24 @@ Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek Brotli
 Group:		Development/Libraries
 Requires:	libbrotli = %{version}-%{release}
 Requires:	libstdc++-devel >= 6:4.7
-Obsoletes:	libbrotli-static
 
 %description -n libbrotli-devel
 Header files for Brotli libraries.
 
 %description -n libbrotli-devel -l pl.UTF-8
 Pliki nagłówkowe bibliotek Brotli.
+
+%package -n libbrotli-static
+Summary:	Static Brotli libraries
+Summary(pl.UTF-8):	Statyczne biblioteki Brotli
+Group:		Development/Libraries
+Requires:	libbrotli-devel = %{version}-%{release}
+
+%description -n libbrotli-static
+Static Brotli libraries.
+
+%description -n libbrotli-static -l pl.UTF-8
+Statyczne biblioteki Brotli.
 
 %package -n python-brotli
 Summary:	Python 2 module for Brotli compression decoding/encoding
@@ -158,6 +169,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/libbrotlicommon.pc
 %{_pkgconfigdir}/libbrotlidec.pc
 %{_pkgconfigdir}/libbrotlienc.pc
+
+%files -n libbrotli-static
+%defattr(644,root,root,755)
+%{_libdir}/libbrotlicommon-static.a
+%{_libdir}/libbrotlidec-static.a
+%{_libdir}/libbrotlienc-static.a
 
 %if %{with python2}
 %files -n python-brotli
