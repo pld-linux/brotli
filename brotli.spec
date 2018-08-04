@@ -15,12 +15,15 @@ Group:		Libraries
 Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.tar.gz
 # Source0-md5:	5d3c45e033d31d1c986b59e16421ba3c
 URL:		https://github.com/google/brotli/
+BuildRequires:	autoconf >= 2.61
+BuildRequires:	automake >= 1:1.7
 BuildRequires:	cmake >= 2.8.6
 BuildRequires:	libstdc++-devel >= 6:4.7
 %{?with_python2:BuildRequires:	python-devel >= 2}
 %{?with_python3:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
+Requires:	libbrotli = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -109,13 +112,16 @@ Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 %setup -q
 
 %build
-install -d build
-cd build
-%cmake ..
+./bootstrap
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__automake}
+%configure \
+	--enable-shared \
+	--enable-static
 
 %{__make}
-
-cd ..
 
 %if %{with python2}
 %py_build
@@ -127,7 +133,7 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} -C build install \
+%{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with python2}
@@ -148,7 +154,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README.md docs/brotli-comparison-study-2015-09-22.pdf
+%doc README README.md docs/brotli-comparison-study-2015-09-22.pdf
 %attr(755,root,root) %{_bindir}/brotli
 
 %files -n libbrotli
@@ -165,6 +171,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libbrotlicommon.so
 %attr(755,root,root) %{_libdir}/libbrotlidec.so
 %attr(755,root,root) %{_libdir}/libbrotlienc.so
+%{_libdir}/libbrotlicommon.la
+%{_libdir}/libbrotlidec.la
+%{_libdir}/libbrotlienc.la
 %{_includedir}/brotli
 %{_pkgconfigdir}/libbrotlicommon.pc
 %{_pkgconfigdir}/libbrotlidec.pc
@@ -172,9 +181,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libbrotli-static
 %defattr(644,root,root,755)
-%{_libdir}/libbrotlicommon-static.a
-%{_libdir}/libbrotlidec-static.a
-%{_libdir}/libbrotlienc-static.a
+%{_libdir}/libbrotlicommon.a
+%{_libdir}/libbrotlidec.a
+%{_libdir}/libbrotlienc.a
 
 %if %{with python2}
 %files -n python-brotli
