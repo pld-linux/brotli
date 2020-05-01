@@ -17,6 +17,7 @@ Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.
 URL:		https://github.com/google/brotli/
 BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake >= 1:1.7
+BuildRequires:	bc
 BuildRequires:	cmake >= 2.8.6
 BuildRequires:	libstdc++-devel >= 6:4.7
 %{?with_python2:BuildRequires:	python-devel >= 2}
