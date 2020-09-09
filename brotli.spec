@@ -7,19 +7,20 @@
 Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
-Version:	1.0.7
-Release:	3
+Version:	1.0.9
+Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
 Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.tar.gz
-# Source0-md5:	7b6edd4f2128f22794d0ca28c53898a5
+# Source0-md5:	c2274f0c7af8470ad514637c35bcee7d
 URL:		https://github.com/google/brotli/
 BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake >= 1:1.7
 BuildRequires:	bc
 BuildRequires:	cmake >= 2.8.6
 BuildRequires:	libstdc++-devel >= 6:4.7
+BuildRequires:	libtool >= 2:2
 %{?with_python2:BuildRequires:	python-devel >= 2}
 %{?with_python3:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	rpm-pythonprov
@@ -118,9 +119,7 @@ Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
-%configure \
-	--enable-shared \
-	--enable-static
+%configure
 
 %{__make}
 
@@ -150,12 +149,12 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -n libbrotli -p /sbin/ldconfig
-%postun -n libbrotli -p /sbin/ldconfig
+%post	-n libbrotli -p /sbin/ldconfig
+%postun	-n libbrotli -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
-%doc README README.md docs/brotli-comparison-study-2015-09-22.pdf
+%doc README README.md
 %attr(755,root,root) %{_bindir}/brotli
 
 %files -n libbrotli
