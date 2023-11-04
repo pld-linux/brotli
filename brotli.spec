@@ -1,25 +1,25 @@
 #
 # Conditional build:
-%bcond_without	python2		# Python 2 module
+%bcond_with	python2		# Python 2 module
 %bcond_without	python3		# Python 3 module
 %bcond_without	static_libs	# don't build static libraries
 #
 Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
-Version:	1.0.9
-Release:	6
+Version:	1.1.0
+Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
 Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.tar.gz
-# Source0-md5:	c2274f0c7af8470ad514637c35bcee7d
+# Source0-md5:	3a6a3dba82a3604792d3cb0bd41bca60
 Patch0:		%{name}-pc.patch
 URL:		https://github.com/google/brotli/
 BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake >= 1:1.7
 BuildRequires:	bc
-BuildRequires:	cmake >= 2.8.6
+BuildRequires:	cmake >= 3.16
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2
 %{?with_python2:BuildRequires:	python-devel >= 2}
@@ -113,17 +113,17 @@ Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
-./bootstrap
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__automake}
-%configure
+%cmake -B build
+%{__make} -C build
 
-%{__make}
+%if %{with static_libs}
+%cmake -B build-static \
+	-DBUILD_SHARED_LIBS=OFF
+
+%{__make} -C build-static
+%endif
 
 %if %{with python2}
 %py_build
@@ -135,8 +135,13 @@ Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%if %{with static_libs}
+%{__make} -C build-static install \
+	DESTDIR=$RPM_BUILD_ROOT
+%endif
 
 %if %{with python2}
 %py_install
@@ -162,20 +167,17 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libbrotli
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbrotlicommon.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbrotlicommon.so.1
+%ghost %{_libdir}/libbrotlicommon.so.1
 %attr(755,root,root) %{_libdir}/libbrotlidec.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbrotlidec.so.1
+%ghost %{_libdir}/libbrotlidec.so.1
 %attr(755,root,root) %{_libdir}/libbrotlienc.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbrotlienc.so.1
+%ghost %{_libdir}/libbrotlienc.so.1
 
 %files -n libbrotli-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbrotlicommon.so
-%attr(755,root,root) %{_libdir}/libbrotlidec.so
-%attr(755,root,root) %{_libdir}/libbrotlienc.so
-%{_libdir}/libbrotlicommon.la
-%{_libdir}/libbrotlidec.la
-%{_libdir}/libbrotlienc.la
+%{_libdir}/libbrotlicommon.so
+%{_libdir}/libbrotlidec.so
+%{_libdir}/libbrotlienc.so
 %{_includedir}/brotli
 %{_pkgconfigdir}/libbrotlicommon.pc
 %{_pkgconfigdir}/libbrotlidec.pc
