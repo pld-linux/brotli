@@ -1,8 +1,8 @@
 #
 # Conditional build:
-%bcond_with	python2		# Python 2 module
+%bcond_without	python2		# Python 2 module
 %bcond_without	python3		# Python 3 module
-%bcond_without	static_libs	# don't build static libraries
+%bcond_without	static_libs	# static libraries
 #
 Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
@@ -14,16 +14,13 @@ Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
 Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.tar.gz
 # Source0-md5:	3a6a3dba82a3604792d3cb0bd41bca60
-Patch0:		%{name}-pc.patch
+Patch0:		%{name}-py2.patch
 URL:		https://github.com/google/brotli/
-BuildRequires:	autoconf >= 2.61
-BuildRequires:	automake >= 1:1.7
 BuildRequires:	bc
 BuildRequires:	cmake >= 3.16
 BuildRequires:	libstdc++-devel >= 6:4.7
-BuildRequires:	libtool >= 2:2
-%{?with_python2:BuildRequires:	python-devel >= 2}
-%{?with_python3:BuildRequires:	python3-devel >= 1:3.2}
+%{?with_python2:BuildRequires:	python-devel >= 1:2.7}
+%{?with_python3:BuildRequires:	python3-devel >= 1:3.3}
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
 Requires:	libbrotli = %{version}-%{release}
@@ -113,9 +110,11 @@ Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %cmake -B build
+
 %{__make} -C build
 
 %if %{with static_libs}
@@ -128,6 +127,7 @@ Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 %if %{with python2}
 %py_build
 %endif
+
 %if %{with python3}
 %py3_build
 %endif
