@@ -183,11 +183,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/libbrotlidec.pc
 %{_pkgconfigdir}/libbrotlienc.pc
 
+%if %{with static_libs}
 %files -n libbrotli-static
 %defattr(644,root,root,755)
 %{_libdir}/libbrotlicommon.a
 %{_libdir}/libbrotlidec.a
 %{_libdir}/libbrotlienc.a
+%endif
 
 %if %{with python2}
 %files -n python-brotli
