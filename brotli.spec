@@ -17,7 +17,7 @@ Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.
 Patch0:		%{name}-py2.patch
 URL:		https://github.com/google/brotli/
 BuildRequires:	bc
-BuildRequires:	cmake >= 3.16
+BuildRequires:	cmake >= 3.15
 BuildRequires:	libstdc++-devel >= 6:4.7
 %{?with_python2:BuildRequires:	python-devel >= 1:2.7}
 %{?with_python3:BuildRequires:	python3-devel >= 1:3.3}
