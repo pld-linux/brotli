@@ -8,7 +8,7 @@ Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
 Version:	1.1.0
-Release:	
+Release:	2
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
@@ -110,7 +110,7 @@ Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -P 0 -p1
 
 %build
 %cmake -B build
