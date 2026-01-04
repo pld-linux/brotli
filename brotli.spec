@@ -8,7 +8,7 @@ Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
 Version:	1.2.0
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
@@ -132,6 +132,7 @@ Moduł Pythona 3 do kodowania/dekodowania kompresji Brotli.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/%{_lib}
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -151,6 +152,11 @@ rm -rf $RPM_BUILD_ROOT
 %py3_install
 %endif
 
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/libbrotli*.so.* $RPM_BUILD_ROOT/%{_lib}
+ln -sf /%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/libbrotlicommon.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libbrotlicommon.so
+ln -sf /%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/libbrotlidec.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libbrotlidec.so
+ln -sf /%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/libbrotlienc.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libbrotlienc.so
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -165,12 +171,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libbrotli
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbrotlicommon.so.*.*
-%ghost %{_libdir}/libbrotlicommon.so.1
-%attr(755,root,root) %{_libdir}/libbrotlidec.so.*.*
-%ghost %{_libdir}/libbrotlidec.so.1
-%attr(755,root,root) %{_libdir}/libbrotlienc.so.*.*
-%ghost %{_libdir}/libbrotlienc.so.1
+/%{_lib}/libbrotlicommon.so.*.*
+%ghost /%{_lib}/libbrotlicommon.so.1
+/%{_lib}/libbrotlidec.so.*.*
+%ghost /%{_lib}/libbrotlidec.so.1
+/%{_lib}/libbrotlienc.so.*.*
+%ghost /%{_lib}/libbrotlienc.so.1
 
 %files -n libbrotli-devel
 %defattr(644,root,root,755)
