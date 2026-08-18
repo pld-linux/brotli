@@ -18,8 +18,18 @@ URL:		https://github.com/google/brotli/
 BuildRequires:	bc
 BuildRequires:	cmake >= 3.15
 BuildRequires:	libstdc++-devel >= 6:4.7
-%{?with_python2:BuildRequires:	python-devel >= 1:2.7}
-%{?with_python3:BuildRequires:	python3-devel >= 1:3.3}
+%if %{with python2}
+BuildRequires:	python >= 1:2.7
+BuildRequires:	python-devel >= 1:2.7
+BuildRequires:	python-modules >= 1:2.7
+BuildRequires:	python-setuptools
+%endif
+%if %{with python3}
+BuildRequires:	python3 >= 1:3.3
+BuildRequires:	python3-devel >= 1:3.3
+BuildRequires:	python3-modules >= 1:3.3
+BuildRequires:	python3-setuptools
+%endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
 Requires:	libbrotli = %{version}-%{release}
