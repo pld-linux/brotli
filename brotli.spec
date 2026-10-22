@@ -7,13 +7,13 @@
 Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
-Version:	1.2.0
-Release:	3
+Version:	1.2.1
+Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
 Source0:	https://github.com/google/brotli/archive/v%{version}/Brotli-%{version}.tar.gz
-# Source0-md5:	8fbfae9a5ecbc278ae7f761ecb6d1285
+# Source0-md5:	960bffba8ce7a63451cd700b8f0aaa10
 URL:		https://github.com/google/brotli/
 BuildRequires:	bc
 BuildRequires:	cmake >= 3.15
