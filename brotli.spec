@@ -8,7 +8,7 @@ Summary:	Brotli - generic-purpose lossless compression algorithm
 Summary(pl.UTF-8):	Brotli - algorytm bezstratnej kompresji ogólnego przeznaczenia
 Name:		brotli
 Version:	1.2.1
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/brotli/releases
@@ -32,7 +32,7 @@ BuildRequires:	python3-setuptools
 %endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
-Requires:	libbrotli = %{version}-%{release}
+Requires:	libbrotli%{?_isa} = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -74,7 +74,7 @@ Biblioteki do kodowania/dekodowania kompresji Brotli.
 Summary:	Header files for Brotli libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek Brotli
 Group:		Development/Libraries
-Requires:	libbrotli = %{version}-%{release}
+Requires:	libbrotli%{?_isa} = %{version}-%{release}
 Requires:	libstdc++-devel >= 6:4.7
 
 %description -n libbrotli-devel
@@ -87,7 +87,7 @@ Pliki nagłówkowe bibliotek Brotli.
 Summary:	Static Brotli libraries
 Summary(pl.UTF-8):	Statyczne biblioteki Brotli
 Group:		Development/Libraries
-Requires:	libbrotli-devel = %{version}-%{release}
+Requires:	libbrotli-devel%{?_isa} = %{version}-%{release}
 
 %description -n libbrotli-static
 Static Brotli libraries.
@@ -167,6 +167,11 @@ ln -sf /%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/libbrotlicommon.so.*.*.*) $RP
 ln -sf /%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/libbrotlidec.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libbrotlidec.so
 ln -sf /%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/libbrotlienc.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libbrotlienc.so
 
+# generic header names; suffix the section as Fedora does (man 3brotli decode.h)
+for f in constants decode encode types; do
+	%{__mv} $RPM_BUILD_ROOT%{_mandir}/man3/$f.h.3 $RPM_BUILD_ROOT%{_mandir}/man3/$f.h.3brotli
+done
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -197,6 +202,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/libbrotlicommon.pc
 %{_pkgconfigdir}/libbrotlidec.pc
 %{_pkgconfigdir}/libbrotlienc.pc
+%{_mandir}/man3/constants.h.3brotli*
+%{_mandir}/man3/decode.h.3brotli*
+%{_mandir}/man3/encode.h.3brotli*
+%{_mandir}/man3/types.h.3brotli*
 
 %if %{with static_libs}
 %files -n libbrotli-static
